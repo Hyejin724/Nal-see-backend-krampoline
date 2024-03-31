@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    url: ${MYSQL_URL}
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: ${OAUTH_KAKAO_ID}
+            client-secret: ${OAUTH_KAKAO_SECRET}
+            redirect-uri: ${OAUTH_KAKAO_URI}
+
+cloud:
+   aws:
+    credentials:
+      access-key: ${AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_KEY}
+
+server:
+  ssl:
+    key-store: ${SSL_PATH}
+    key-store-password: ${SSL_PASSWORD}
+    key-store-type: PKCS12
+    key-alias: spring
