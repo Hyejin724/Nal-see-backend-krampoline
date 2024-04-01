@@ -1,26 +1,20 @@
 spring:
   datasource:
-    url: ${MYSQL_URL}
-    username: ${MYSQL_USERNAME}
-    password: ${MYSQL_PASSWORD}
+    url: jdbc:mariadb://localhost:3306/nalsee?useUnicode=true&characterEncoding=UTF-8
+    username: groot
+    password: 1234
   security:
     oauth2:
       client:
         registration:
           kakao:
-            client-id: ${OAUTH_KAKAO_ID}
-            client-secret: ${OAUTH_KAKAO_SECRET}
-            redirect-uri: ${OAUTH_KAKAO_URI}
+            client-id: 3dd4f833d984da38334cc5c01c23ed5b
+            client-secret: Zpiomn48UR0T198uygxgsQkQ91kDCrUL
+            redirect-uri: http://localhost:8080/login/oauth2/code/kakao
 
 cloud:
    aws:
     credentials:
-      access-key: ${AWS_ACCESS_KEY}
-      secret-key: ${AWS_SECRET_KEY}
+      access-key: AKIAXFE3K33TPGJQRC4M
+      secret-key: 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
 
-server:
-  ssl:
-    key-store: ${SSL_PATH}
-    key-store-password: ${SSL_PASSWORD}
-    key-store-type: PKCS12
-    key-alias: spring

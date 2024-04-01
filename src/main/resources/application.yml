@@ -79,3 +79,13 @@ logging:
         security: DEBUG
 
 ---
+spring:
+  config:
+    activate:
+      on-profile: kram
+    import: application-kram.yml
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
