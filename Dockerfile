@@ -17,4 +17,4 @@ ENV DATABASE_URL= ${DATABASE_URL}
 RUN ./gradlew clean build -x test
 
 # 빌드 결과 jar 파일을 실행
-CMD ["java", "-jar", "/home/gradle/project/build/libs/nalsee-backend-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "-Dspring.profiles.active=kram", "/home/gradle/project/build/libs/nalsee-backend-0.0.1-SNAPSHOT.jar"]
