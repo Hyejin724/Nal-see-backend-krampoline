@@ -14,7 +14,7 @@ RUN echo "systemProp.http.proxyHost=krmp-proxy.9rum.cc\nsystemProp.http.proxyPor
 RUN ./gradlew clean build -x test
 
 # DATABASE_URL을 환경 변수로 삽입
-ENV DATABASE_URL=jdbc:mariadb://mariadb/nalsee
+ENV DATABASE_URL=${DATABASE_URL}
 
 # 빌드 결과 jar 파일을 실행
 CMD ["java", "-jar", "/home/gradle/project/build/libs/nalsee-backend-0.0.1-SNAPSHOT.jar"]
