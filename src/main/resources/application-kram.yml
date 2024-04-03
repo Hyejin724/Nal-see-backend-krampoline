@@ -1,20 +1,20 @@
 spring:
   datasource:
     url: jdbc:mariadb://mariadb:3306/nalsee
-    username: groot
-    password: 1234
+    username: 
+    password: 
   security:
     oauth2:
       client:
         registration:
           kakao:
-            client-id: 3dd4f833d984da38334cc5c01c23ed5b
-            client-secret: Zpiomn48UR0T198uygxgsQkQ91kDCrUL
-            redirect-uri: http://localhost:8080/login/oauth2/code/kakao
+            client-id: 
+            client-secret: 
+            redirect-uri: 
 
 cloud:
    aws:
     credentials:
-      access-key: AKIAXFE3K33TPGJQRC4M
-      secret-key: 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
+      access-key: 
+      secret-key: 
 
