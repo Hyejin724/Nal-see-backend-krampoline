@@ -27,6 +27,7 @@ public class NalseeBackendApplication implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         // 여기에서 원하는 환경 변수나 속성을 로그로 출력
         logger.info("현재 환경: {}", env.getActiveProfiles());
+        logger.info("데이터베이스 사용자 이름: {}", env.getProperty("spring.datasource.username"));
         // 추가적으로 필요한 로그 출력
     }
 
