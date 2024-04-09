@@ -97,18 +97,18 @@ logging:
             sql: TRACE
 
 ---
-spring:
-  config:
-    activate:
-      on-profile: kram
-    import: application-kram.yml
-logging:
-  level:
-    org:
-      springframework:
-        security: DEBUG
-      hibernate:
-        SQL: DEBUG
-        type:
-          descriptor:
-            sql: TRACE
+# spring:
+#   config:
+#     activate:
+#       on-profile: kram
+#     import: application-kram.yml
+# logging:
+#   level:
+#     org:
+#       springframework:
+#         security: DEBUG
+#       hibernate:
+#         SQL: DEBUG
+#         type:
+#           descriptor:
+#             sql: TRACE
