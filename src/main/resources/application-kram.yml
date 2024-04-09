@@ -4,7 +4,7 @@ spring:
   datasource:
     url: jdbc:mariadb://mariadb:3306/nalsee
     username: root
-    password: 1234
+    password: root
     driver-class-name: org.mariadb.jdbc.Driver
   jpa:
     database-platform: org.hibernate.dialect.MariaDBDialect
