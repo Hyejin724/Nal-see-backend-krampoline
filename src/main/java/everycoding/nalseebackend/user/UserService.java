@@ -1,29 +1,28 @@
 package everycoding.nalseebackend.user;
 
 import everycoding.nalseebackend.api.exception.BaseException;
+import everycoding.nalseebackend.auth.jwt.JwtTokenProvider;
+import everycoding.nalseebackend.comment.CommentRepository;
+import everycoding.nalseebackend.comment.domain.Comment;
 import everycoding.nalseebackend.post.PostRepository;
 import everycoding.nalseebackend.post.domain.Post;
 import everycoding.nalseebackend.user.domain.UserInfo;
 import everycoding.nalseebackend.user.dto.UserFeedResponseDto;
 import everycoding.nalseebackend.user.dto.UserInfoRequestDto;
 import everycoding.nalseebackend.user.dto.UserInfoResponseDto;
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 
 import everycoding.nalseebackend.auth.dto.request.SignupRequestDto;
 import everycoding.nalseebackend.auth.exception.EmailAlreadyUsedException;
 import everycoding.nalseebackend.user.domain.User;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -34,6 +33,8 @@ public class UserService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final CommentRepository commentRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public void followUser(Long userId, Long myId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new BaseException("wrong userId"));
@@ -57,6 +58,7 @@ public class UserService {
     public UserInfoResponseDto getUserInfo(long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new BaseException("wrong userId"));
         return UserInfoResponseDto.builder()
+                .username(user.getUsername())
                 .height(user.getUserInfo().getHeight())
                 .weight(user.getUserInfo().getWeight())
                 .constitution(user.getUserInfo().getConstitution())
@@ -67,6 +69,11 @@ public class UserService {
 
     public void setUserInfo(long userId, UserInfoRequestDto requestDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new BaseException("wrong userId"));
+
+        // 새로운 username이 제공되었는지 확인하고 업데이트
+        if (requestDto.getUsername() != null && !requestDto.getUsername().equals(user.getUsername())) {
+            user.setUsername(requestDto.getUsername());
+        }
         user.setUserInfo(
                 UserInfo.builder()
                 .height(requestDto.getHeight())
@@ -76,6 +83,7 @@ public class UserService {
                 .gender(requestDto.getGender())
                 .build()
         );
+        user.setNewUser(false);
         userRepository.save(user);
     }
 
@@ -120,7 +128,42 @@ public class UserService {
         Optional<Post> byId = postRepository.findById(postId);
         Post post = byId.orElseThrow();
         User user = post.getUser();
-        List<String> fcmToken = user.getFcmToken();
-        return fcmToken.stream().findFirst().toString();
+        String fcmToken = user.getFcmToken();
+        if (fcmToken == null || fcmToken.isEmpty()) {
+            return "error";
+        }
+        return fcmToken;
     }
+
+    public User findUserByPostId(Long postId) {
+        Optional<Post> byId = postRepository.findById(postId);
+        Post post = byId.orElseThrow();
+
+        return post.getUser();
+    }
+
+    public String findUserTokenByCommentId(Long commentId) {
+        Optional<Comment> byId = commentRepository.findById(commentId);
+        Comment comment = byId.orElseThrow();
+        User user = comment.getUser();
+        String fcmToken = user.getFcmToken();
+        if (fcmToken == null ||fcmToken.isEmpty()) {
+            return "error";
+        }
+        return fcmToken;
+    }
+
+    public User findUserByCommentId(Long commentId) {
+        Optional<Comment> byId = commentRepository.findById(commentId);
+        Comment comment = byId.orElseThrow();
+        return comment.getUser();
+    }
+
+    public User findUserByJwt(String token) {
+        Claims claims = jwtTokenProvider.getClaims(token);
+        String userEmail = claims.getSubject();
+        Optional<User> byEmail = userRepository.findByEmail(userEmail);
+        return byEmail.orElseThrow();
+    }
+
 }

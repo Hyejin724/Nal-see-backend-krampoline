@@ -7,9 +7,8 @@ import everycoding.nalseebackend.post.domain.Post;
 import everycoding.nalseebackend.post.dto.*;
 import everycoding.nalseebackend.user.UserRepository;
 import everycoding.nalseebackend.user.domain.*;
-import everycoding.nalseebackend.user.dto.UserInfoResponseDto;
-import everycoding.nalseebackend.weather.Weather;
-import everycoding.nalseebackend.weather.dto.WeatherResponseDto;
+import everycoding.nalseebackend.weather.caller.WeatherApiCaller;
+import everycoding.nalseebackend.weather.caller.info.CurrentWeatherInfo;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +18,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -38,8 +36,8 @@ public class PostServiceImpl implements PostService{
     private final UserRepository userRepository;
     private final S3Service s3Service;
     private final CommentService commentService;
-    private final RestTemplate restTemplate;
     private final PostSpecification postSpecification;
+    private final WeatherApiCaller weatherApiCaller;
 
     @Override
     @Transactional(readOnly = true)
@@ -157,26 +155,12 @@ public class PostServiceImpl implements PostService{
 
     @Override
     @Transactional(readOnly = true)
-    public List<PostResponseDto> getPostsInLocation(
-            Long userId,
-            double bottomLeftLat, double bottomLeftLong,
-            double topRightLat, double topRightLong
-    ) {
-        List<Post> posts = postRepository.findByLocationWithin(bottomLeftLat, bottomLeftLong, topRightLat, topRightLong);
-
-        return posts.stream()
-                .map(post -> PostResponseDto.createPostResponseDto(post, isLiked(userId, post.getId())))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public PostForDetailResponseDto getPost(Long userId, Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new BaseException("wrong postId"));
         return new PostForDetailResponseDto(
                 PostResponseDto.createPostResponseDto(post, isLiked(userId, post.getId())),
                 post.getUserInfo(),
-                commentService.getComments(postId)
+                commentService.getComments(userId, postId)
         );
     }
 
@@ -233,7 +217,8 @@ public class PostServiceImpl implements PostService{
 
         List<String> photos = s3Service.uploadS3(files);
 
-        WeatherResponseDto weatherResponseDto = getWeather(postRequestDto.getLatitude(), postRequestDto.getLongitude());
+        CurrentWeatherInfo currentWeatherInfo = weatherApiCaller.getCurrentWeather(postRequestDto.getLatitude(), postRequestDto.getLongitude());
+
         UserInfo userInfo = UserInfo.builder()
                 .height(postRequestDto.getUserInfo().getHeight())
                 .weight(postRequestDto.getUserInfo().getWeight())
@@ -247,8 +232,8 @@ public class PostServiceImpl implements PostService{
                         .pictureList(photos)
                         .content(postRequestDto.getContent())
                         .user(user)
-                        .weather(Weather.valueOf(weatherResponseDto.getWeather().get(0).getMain()))
-                        .temperature(Math.ceil((weatherResponseDto.getMain().getTemp() - 273.15) * 10) / 10.0)
+                        .weather(currentWeatherInfo.getWeather().toString())
+                        .temperature(currentWeatherInfo.getTemperature())
                         .address(postRequestDto.getAddress())
                         .latitude(postRequestDto.getLatitude())
                         .longitude(postRequestDto.getLongitude())
@@ -309,11 +294,6 @@ public class PostServiceImpl implements PostService{
 
         userRepository.save(user);
         postRepository.save(post);
-    }
-
-    private WeatherResponseDto getWeather(double latitude, double longitude) {
-        String url = "https://api.openweathermap.org/data/2.5/weather?lat=" + latitude + "&lon=" + longitude + "&appid=7b9d8977d2c3d10d5ae6e4b4b4907c10";
-        return restTemplate.getForObject(url, WeatherResponseDto.class);
     }
 
     private boolean isLiked(long userId, long postId) {

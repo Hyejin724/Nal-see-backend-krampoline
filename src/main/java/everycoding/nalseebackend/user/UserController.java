@@ -2,25 +2,52 @@ package everycoding.nalseebackend.user;
 
 import everycoding.nalseebackend.api.ApiResponse;
 import everycoding.nalseebackend.auth.customUser.CustomUserDetails;
+import everycoding.nalseebackend.firebase.alarm.AlarmService;
+import everycoding.nalseebackend.firebase.alarm.domain.AlarmType;
+import everycoding.nalseebackend.user.domain.User;
 import everycoding.nalseebackend.user.dto.UserFeedResponseDto;
 import everycoding.nalseebackend.user.dto.UserInfoRequestDto;
 import everycoding.nalseebackend.user.dto.UserInfoResponseDto;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
+    private final UserRepository userRepository;
+    private final AlarmService alarmService;
 
     // 팔로우
     @PostMapping("/api/users/{userId}/follow")
     public ApiResponse<Void> followUser(
             @PathVariable Long userId,
-            @AuthenticationPrincipal CustomUserDetails customUserDetails
-    ) {
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            HttpServletRequest request
+    ) throws IOException {
+        String token = "";
+        Cookie[] cookies = request.getCookies();
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals("AccessToken")) {
+                token = cookie.getValue();
+            }
+        }
+        User user = userService.findUserByJwt(token);
+        String username = user.getUsername();
+
+        Optional<User> byId = userRepository.findById(userId);
+        User owner = byId.orElseThrow();
+        String userToken = owner.getFcmToken();
+        String message = username +"님이 팔로우를 시작했습니다.";
+        String title = "팔로우 알림";
+        alarmService.sendFcmAndSaveAlarm(owner, user, username, userToken, title, message, user.getId(), AlarmType.USER);
         userService.followUser(userId, customUserDetails.getId());
         return ApiResponse.ok();
     }

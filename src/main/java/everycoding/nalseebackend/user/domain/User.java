@@ -4,6 +4,7 @@ import everycoding.nalseebackend.BaseEntity;
 import everycoding.nalseebackend.auth.oauth2.AuthProvider;
 import everycoding.nalseebackend.auth.oauth2.OAuth2UserInfo;
 import everycoding.nalseebackend.comment.domain.Comment;
+import everycoding.nalseebackend.firebase.alarm.domain.Alarm;
 import everycoding.nalseebackend.post.domain.Post;
 import jakarta.persistence.Entity;
 import jakarta.persistence.*;
@@ -29,13 +30,14 @@ public class User extends BaseEntity {
     private Long id;
 
     //카카오에서 받아올 username, email, picture
+    @Setter
     private String username;
     private String email;
     private String password;
     private String picture;
 
     private String role;
-
+    @Setter
     private boolean newUser = true;
 
     @Setter
@@ -50,8 +52,8 @@ public class User extends BaseEntity {
     @ElementCollection
     private List<Long> commentLikeList = new ArrayList<>();
 
-    @ElementCollection
-    private List<String> fcmToken = new ArrayList<>();
+    @Setter
+    private String fcmToken;
 
     @ManyToMany
     @JoinTable(
@@ -73,6 +75,10 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.ALL})
     private List<Comment> comments;
+
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.ALL})
+    private List<Alarm> alarms;
+
 
 
     public User(String username, String email) {

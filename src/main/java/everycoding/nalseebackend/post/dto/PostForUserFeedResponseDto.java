@@ -10,6 +10,6 @@ import lombok.Getter;
 public class PostForUserFeedResponseDto {
     private Long postId;
     private String postPicture;
-    private boolean isMany;
+    private Boolean isMany;
 
 }

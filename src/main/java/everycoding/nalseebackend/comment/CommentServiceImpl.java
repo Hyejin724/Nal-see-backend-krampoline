@@ -28,7 +28,7 @@ public class CommentServiceImpl implements CommentService{
 
     @Override
     @Transactional(readOnly = true)
-    public List<CommentResponseDto> getComments(Long postId) {
+    public List<CommentResponseDto> getComments(Long userId, Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new BaseException("wrong postId"));
         return commentRepository.findAllByPost(post)
                 .stream()
@@ -36,6 +36,7 @@ public class CommentServiceImpl implements CommentService{
                         .id(comment.getId())
                         .content(comment.getContent())
                         .likeCNT(comment.getLikeCNT())
+                        .isLiked(isLiked(userId, comment.getId()))
                         .createDate(comment.getCreateDate())
                         .userId(comment.getUser().getId())
                         .userImage(comment.getUser().getPicture())
@@ -105,5 +106,11 @@ public class CommentServiceImpl implements CommentService{
 
         userRepository.save(user);
         commentRepository.save(comment);
+    }
+
+    private boolean isLiked(Long userId, Long commentId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException("wrong userId"));
+
+        return user.getCommentLikeList().contains(commentId);
     }
 }

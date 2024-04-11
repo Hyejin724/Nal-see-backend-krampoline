@@ -3,6 +3,7 @@ package everycoding.nalseebackend.webclient.dto;
 import lombok.Builder;
 import lombok.Data;
 
+
 @Data
 public class MessageEventDto {
 

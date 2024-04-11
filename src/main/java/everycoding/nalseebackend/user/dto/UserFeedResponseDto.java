@@ -7,15 +7,15 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class UserFeedResponseDto {
-    private int feedCount;
-    private int followingCount;
-    private int followerCount;
+    private Integer feedCount;
+    private Integer followingCount;
+    private Integer followerCount;
 
-    private long userId;
+    private Long userId;
     private String userImage;
     private String username;
 
-    private boolean isFollowed;
+    private Boolean isFollowed;
 
     @Builder
     public UserFeedResponseDto(int feedCount, int followingCount, int followerCount, long userId, String userImage, String username, boolean isFollowed) {
