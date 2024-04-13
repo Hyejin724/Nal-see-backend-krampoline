@@ -2,8 +2,8 @@ spring:
   profiles:
     active: dev
   datasource:
-    url: jdbc:mariadb://localhost:3306/nalsee
-    username: groot
+    url: jdbc:mariadb://localhost:8080/nalsee
+    username: root
     password: 1234
     driver-class-name: org.mariadb.jdbc.Driver
   jpa:
@@ -111,4 +111,4 @@ logging:
         SQL: DEBUG
         type:
           descriptor:
-            sql: TRACE
+#             sql: TRACE
