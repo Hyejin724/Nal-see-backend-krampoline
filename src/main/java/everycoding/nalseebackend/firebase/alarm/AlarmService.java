@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,9 +25,11 @@ public class AlarmService {
         List<Alarm> alarmsByUser = alarmRepository.findAlarmsByUser(user);
         return alarmsByUser.stream().map(alarm -> {
             AlarmDto.AlarmDtoBuilder builder = AlarmDto.builder()
+                    .id(alarm.getId())
                     .message(alarm.getMessage())
                     .senderId(alarm.getSenderId())
                     .senderName(alarm.getSenderName())
+                    .isRead(alarm.getIsRead())
                     .createAt(alarm.getCreateDate())
                     .senderImage(alarm.getSenderImg());
 
@@ -74,6 +77,7 @@ public class AlarmService {
                     .senderName(username)
                     .user(owner)
                     .message(message)
+                    .isRead(false)
                     .build();
 
             switch (alarmType) {
@@ -90,5 +94,12 @@ public class AlarmService {
 
             alarmRepository.save(alarm);
         }
+    }
+
+    public void readAlarm(Long alarmId) {
+        Optional<Alarm> byId = alarmRepository.findById(alarmId);
+        Alarm alarm = byId.orElseThrow();
+        alarm.setIsRead(true);
+        alarmRepository.save(alarm);
     }
 }

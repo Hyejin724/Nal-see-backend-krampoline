@@ -45,6 +45,9 @@ public class UserController {
         Optional<User> byId = userRepository.findById(userId);
         User owner = byId.orElseThrow();
         String userToken = owner.getFcmToken();
+        if (userToken == null || userToken.isEmpty()) {
+            userToken = "error";
+        }
         String message = username +"님이 팔로우를 시작했습니다.";
         String title = "팔로우 알림";
         alarmService.sendFcmAndSaveAlarm(owner, user, username, userToken, title, message, user.getId(), AlarmType.USER);

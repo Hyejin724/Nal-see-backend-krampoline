@@ -27,6 +27,9 @@ public class Alarm extends BaseEntity {
 
     private String senderName;
 
+    @Setter
+    private Boolean isRead;
+
     @Nullable
     @Setter
     private Long commentId;
@@ -43,12 +46,13 @@ public class Alarm extends BaseEntity {
     private User user;
 
     @Builder
-    public Alarm(Long id, String message, Long senderId, String senderImg, String senderName, @Nullable Long commentId, @Nullable Long postId, @Nullable Long ownerId, User user) {
+    public Alarm(Long id, String message, Long senderId, String senderImg, String senderName, Boolean isRead, @Nullable Long commentId, @Nullable Long postId, @Nullable Long ownerId, User user) {
         this.id = id;
         this.message = message;
         this.senderId = senderId;
         this.senderImg = senderImg;
         this.senderName = senderName;
+        this.isRead = isRead;
         this.commentId = commentId;
         this.postId = postId;
         this.ownerId = ownerId;
