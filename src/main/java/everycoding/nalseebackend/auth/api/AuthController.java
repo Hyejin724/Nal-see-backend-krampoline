@@ -4,14 +4,13 @@ import everycoding.nalseebackend.auth.dto.request.SignupRequestDto;
 import everycoding.nalseebackend.auth.dto.request.UserResponse;
 import everycoding.nalseebackend.user.UserService;
 import everycoding.nalseebackend.user.domain.User;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,6 +33,12 @@ public class AuthController {
     @PostMapping("/api/signup")
     public ResponseEntity<?> signUpUser(@RequestBody SignupRequestDto signupRequestDto) {
         userService.signUpUser(signupRequestDto);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/api/delete")
+    public ResponseEntity<?> deleteUser(@RequestBody SignupRequestDto signupRequestDto) {
+        userService.deleteUser(signupRequestDto);
         return ResponseEntity.ok().build();
     }
 }

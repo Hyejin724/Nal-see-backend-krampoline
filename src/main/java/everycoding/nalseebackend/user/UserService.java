@@ -166,4 +166,22 @@ public class UserService {
         return byEmail.orElseThrow();
     }
 
+    public void deleteUser(SignupRequestDto signupRequestDto) {
+        User user = userRepository.findByEmail(signupRequestDto.getEmail())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + signupRequestDto.getEmail()));
+
+        // 사용자 삭제
+        userRepository.delete(user);
+
+        // 포스트 삭제
+        postRepository.deleteByUser(user);
+
+        //댓글 삭제
+        commentRepository.deleteByUser(user);
+
+
+
+        log.info("회원 탈퇴 완료: " + user.getUsername());
+    }
+
 }
