@@ -1,11 +1,11 @@
-package everycoding.nalseebackend.weather.dto;
+package everycoding.nalseebackend.weather.caller.dto;
 
 import lombok.Getter;
 
 import java.util.List;
 
 @Getter
-public class WeatherResponseDto {
+public class WeatherApiCurrentWeatherDto {
 
     private Coord coord;
     private List<Weather> weather;

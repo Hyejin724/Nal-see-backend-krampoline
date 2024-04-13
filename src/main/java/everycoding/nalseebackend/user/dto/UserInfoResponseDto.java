@@ -11,10 +11,10 @@ import java.util.List;
 @Getter
 @Builder
 public class UserInfoResponseDto {
-    private double height;
-    private double weight;
+    private String username;
+    private Double height;
+    private Double weight;
     private Constitution constitution;
     private List<FashionStyle> style;
     private Gender gender;
-
 }

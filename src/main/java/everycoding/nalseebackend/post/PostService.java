@@ -10,9 +10,6 @@ public interface PostService {
 
     List<PostScoreDto> getPosts(Long userId, Long lastPostId, Double nowLatitude, Double nowLongitude);
 
-    List<PostResponseDto> getPostsInLocation(Long userId, double bottomLeftLat, double bottomLeftLong,
-                                             double topRightLat, double topRightLong);
-
     PostForDetailResponseDto getPost(Long userId, Long postId);
 
     List<PostResponseDto> searchPosts(Long userId, List<String> weathers, Double minTemperature, Double maxTemperature, Double minHeight, Double maxHeight,

@@ -11,8 +11,9 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class UserInfoRequestDto {
-    private double height;
-    private double weight;
+    private String username;
+    private Double height;
+    private Double weight;
     private Constitution constitution;
     private List<FashionStyle> style;
     private Gender gender;

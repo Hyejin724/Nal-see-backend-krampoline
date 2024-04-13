@@ -34,7 +34,7 @@ public class FcmServiceImpl implements FcmService {
 
         HttpEntity entity = new HttpEntity<>(message, headers);
 
-        String API_URL = "<https://fcm.googleapis.com/v1/projects/nal-see/messages:send>";
+        String API_URL = "https://fcm.googleapis.com/v1/projects/nal-see/messages:send";
         ResponseEntity response = restTemplate.exchange(API_URL, HttpMethod.POST, entity, String.class);
 
         System.out.println(response.getStatusCode());
@@ -52,7 +52,7 @@ public class FcmServiceImpl implements FcmService {
 
         GoogleCredentials googleCredentials = GoogleCredentials
                 .fromStream(new ClassPathResource(firebaseConfigPath).getInputStream())
-                .createScoped(List.of("<https://www.googleapis.com/auth/cloud-platform>"));
+                .createScoped(List.of("https://www.googleapis.com/auth/firebase.messaging"));
 
         googleCredentials.refreshIfExpired();
         return googleCredentials.getAccessToken().getTokenValue();

@@ -47,6 +47,10 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
                 .path("/").sameSite("None").httpOnly(false).secure(true).maxAge(0).build();
         response.addHeader("Set-Cookie", refreshTokenCookie.toString());
 
+        ResponseCookie accessTokenCookie = ResponseCookie.from("AccessToken", null)
+                .path("/").sameSite("None").httpOnly(false).secure(true).maxAge(0).build();
+        response.addHeader("Set-Cookie", accessTokenCookie.toString());
+
 //            Cookie cookie = new Cookie("RefreshToken", null);
 //            cookie.setPath("/");
 //            cookie.setMaxAge(0);
@@ -54,7 +58,7 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
 //            response.addCookie(cookie);
 
             log.info("Success logout");
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().flush();
         }
 

@@ -2,9 +2,12 @@ package everycoding.nalseebackend.post;
 
 import everycoding.nalseebackend.api.ApiResponse;
 import everycoding.nalseebackend.auth.customUser.CustomUserDetails;
+import everycoding.nalseebackend.firebase.alarm.AlarmService;
+import everycoding.nalseebackend.firebase.alarm.domain.AlarmType;
 import everycoding.nalseebackend.post.dto.*;
 import everycoding.nalseebackend.user.UserService;
-import everycoding.nalseebackend.user.dto.UserInfoResponseDto;
+import everycoding.nalseebackend.user.domain.User;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +25,7 @@ public class PostController {
 
     private final PostService postService;
     private final UserService userService;
+    private final AlarmService alarmService;
 
     // 기본 조회
     @GetMapping("/api/posts")
@@ -32,15 +36,6 @@ public class PostController {
             @RequestParam Double nowLongitude
     ) {
         return ApiResponse.ok(postService.getPosts(customUserDetails.getId(), lastPostId, nowLatitude, nowLongitude));
-    }
-
-    // 지도 기준 조회
-    @GetMapping("/api/posts/location")
-    public ApiResponse<List<PostResponseDto>> getPostsInLocation(
-            @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @RequestParam double bottomLeftLat, @RequestParam double bottomLeftLong,
-            @RequestParam double topRightLat, @RequestParam double topRightLong) {
-        return ApiResponse.ok(postService.getPostsInLocation(customUserDetails.getId(), bottomLeftLat, bottomLeftLong, topRightLat, topRightLong));
     }
 
     // 상세 페이지 조회
@@ -91,7 +86,7 @@ public class PostController {
     public ApiResponse<Void> updatePost(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @PathVariable Long postId,
-            @RequestPart PostUpdateRequestDto requestDto
+            @RequestBody PostUpdateRequestDto requestDto
     ) {
         postService.updatePost(customUserDetails.getId(), postId, requestDto);
         return ApiResponse.ok();
@@ -109,7 +104,23 @@ public class PostController {
 
     // 게시물 좋아요
     @PostMapping("/api/posts/{postId}/likes")
-    public ApiResponse<Void> likePost(@AuthenticationPrincipal CustomUserDetails customUserDetails,@PathVariable Long postId) {
+    public ApiResponse<Void> likePost(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable Long postId, HttpServletRequest request) throws IOException {
+        String token = "";
+        Cookie[] cookies = request.getCookies();
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals("AccessToken")) {
+                token = cookie.getValue();
+                log.info("token={}", token);
+            }
+        }
+        User user = userService.findUserByJwt(token);
+        String username = user.getUsername();
+
+        String userToken = userService.findUserTokenByPostId(postId);
+        User userByPostId = userService.findUserByPostId(postId);
+        String message = username +"님이 좋아요를 눌렀습니다.";
+        String title = "좋아요 알림";
+        alarmService.sendFcmAndSaveAlarm(userByPostId, user, username, userToken, title, message, postId, AlarmType.POST);
         postService.likePost(customUserDetails.getId(), postId);
         return ApiResponse.ok();
     }

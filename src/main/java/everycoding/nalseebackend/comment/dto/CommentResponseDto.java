@@ -11,8 +11,8 @@ import java.time.LocalDateTime;
 public class CommentResponseDto {
     private Long id;
     private String content;
-    private int likeCNT;
-    private boolean isLiked;
+    private Integer likeCNT;
+    private Boolean isLiked;
     private LocalDateTime createDate;
 
     private Long userId;
@@ -22,7 +22,7 @@ public class CommentResponseDto {
     private Long postId;
 
     @Builder
-    public CommentResponseDto(Long id, String content, int likeCNT, boolean isLiked, LocalDateTime createDate, Long userId, String userImage, String username, Long postId) {
+    public CommentResponseDto(Long id, String content, Integer likeCNT, Boolean isLiked, LocalDateTime createDate, Long userId, String userImage, String username, Long postId) {
         this.id = id;
         this.content = content;
         this.likeCNT = likeCNT;
