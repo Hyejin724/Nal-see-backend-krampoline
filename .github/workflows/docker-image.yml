@@ -26,7 +26,7 @@ jobs:
         tags: |
           hyejin724/nalsee:latest
         build-args: |
-          DB_URL=${{ secrets.DB_URL }
+          DB_URL=${{ secrets.DB_URL }}
           DB_USERNAME=${{ secrets.DB_USERNAME }}
           DB_PASSWORD=${{ secrets.DB_PASSWORD }}
           KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}
