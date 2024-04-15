@@ -2,9 +2,9 @@ spring:
   profiles:
     active: dev
   datasource:
-    url: jdbc:mariadb://localhost:3306/nalsee
+    url: jdbc:mariadb://mariadb:3306/nalsee
     username: root
-    password: 1234
+    password: root
     driver-class-name: org.mariadb.jdbc.Driver
   jpa:
     database-platform: org.hibernate.dialect.MariaDBDialect
@@ -25,7 +25,7 @@ spring:
           kakao:
             client-id: 3dd4f833d984da38334cc5c01c23ed5b
             client-secret: Zpiomn48UR0T198uygxgsQkQ91kDCrUL
-            redirect-uri: http://localhost:8080/login/oauth2/code/kakao
+            redirect-uri: https://kf7a7d52ef73aa.user-app.krampoline.com:8080/login/oauth2/code/kakao
             authorization-grant-type: authorization_code
             scope:
                 - profile_nickname
