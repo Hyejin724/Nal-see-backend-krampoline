@@ -1,5 +1,5 @@
-# gradle:7.3.1-jdk17 이미지를 기반으로 함
-FROM krmp-d2hub-idock.9rum.cc/goorm/gradle:7.3.1-jdk17
+# Java 17을 사용하는 OpenJDK 이미지를 기반으로 함
+FROM openjdk:17-jdk
 
 # 환경변수 받기
 ARG DB_URL
