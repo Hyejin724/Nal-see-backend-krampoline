@@ -1,9 +1,10 @@
-# Java 17을 사용하는 OpenJDK 이미지를 기반으로 함
-FROM openjdk:17-jdk
+# 명확하게 Debian 기반의 OpenJDK 이미지를 사용
+FROM openjdk:17-jdk-slim
 
 # 필요한 도구 설치
 RUN apt-get update && \
     apt-get install -y findutils
+
 
 # 환경변수 받기
 ARG DB_URL
