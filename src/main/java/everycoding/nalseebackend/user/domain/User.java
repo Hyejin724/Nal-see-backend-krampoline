@@ -3,9 +3,9 @@ package everycoding.nalseebackend.user.domain;
 import everycoding.nalseebackend.BaseEntity;
 import everycoding.nalseebackend.auth.oauth2.AuthProvider;
 import everycoding.nalseebackend.auth.oauth2.OAuth2UserInfo;
-import everycoding.nalseebackend.comment.domain.Comment;
+import everycoding.nalseebackend.comment.repository.Comment;
 import everycoding.nalseebackend.firebase.alarm.domain.Alarm;
-import everycoding.nalseebackend.post.domain.Post;
+import everycoding.nalseebackend.post.repository.Post;
 import jakarta.persistence.Entity;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
@@ -68,7 +68,7 @@ public class User extends BaseEntity {
 
     @Setter
     @Embedded
-    private UserInfo userInfo;
+    private UserDetail userDetail;
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.ALL})
     private List<Post> posts;

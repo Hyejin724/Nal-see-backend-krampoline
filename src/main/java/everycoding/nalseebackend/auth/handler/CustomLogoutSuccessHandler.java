@@ -47,8 +47,16 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
                 .path("/").sameSite("None").httpOnly(false).secure(true).maxAge(0).build();
         response.addHeader("Set-Cookie", refreshTokenCookie.toString());
 
-        ResponseCookie accessTokenCookie = ResponseCookie.from("AccessToken", null)
-                .path("/").sameSite("None").httpOnly(false).secure(true).maxAge(0).build();
+        ResponseCookie accessTokenCookie =
+                ResponseCookie
+                        .from("AccessToken", null)
+                        .path("/")
+                        .sameSite("None")
+                        .httpOnly(false)
+                        .secure(true)
+                        .maxAge(0)
+                        .build();
+
         response.addHeader("Set-Cookie", accessTokenCookie.toString());
 
 //            Cookie cookie = new Cookie("RefreshToken", null);

@@ -1,8 +1,8 @@
 package everycoding.nalseebackend;
 
-import everycoding.nalseebackend.comment.domain.Comment;
-import everycoding.nalseebackend.post.PostRepository;
-import everycoding.nalseebackend.post.domain.Post;
+import everycoding.nalseebackend.comment.repository.Comment;
+import everycoding.nalseebackend.post.repository.PostRepository;
+import everycoding.nalseebackend.post.repository.Post;
 import everycoding.nalseebackend.user.UserRepository;
 import everycoding.nalseebackend.user.domain.*;
 import jakarta.annotation.PostConstruct;
@@ -109,7 +109,7 @@ public class InitDb {
                         .address(places[rd.nextInt(places.length)])
                         .longitude(rd.nextInt(9000)/100.0)
                         .latitude(rd.nextInt(9000)/100.0)
-                        .userInfo(UserInfo.builder()
+                        .userDetail(UserDetail.builder()
                                 .height(160 + rd.nextInt(300)/10.0)
                                 .weight(50 + rd.nextInt(500)/10.0)
                                 .constitution(constitutions[rd.nextInt(constitutions.length)])

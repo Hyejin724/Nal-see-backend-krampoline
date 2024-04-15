@@ -2,11 +2,11 @@ package everycoding.nalseebackend.user;
 
 import everycoding.nalseebackend.api.exception.BaseException;
 import everycoding.nalseebackend.auth.jwt.JwtTokenProvider;
-import everycoding.nalseebackend.comment.CommentRepository;
-import everycoding.nalseebackend.comment.domain.Comment;
-import everycoding.nalseebackend.post.PostRepository;
-import everycoding.nalseebackend.post.domain.Post;
-import everycoding.nalseebackend.user.domain.UserInfo;
+import everycoding.nalseebackend.comment.repository.CommentRepository;
+import everycoding.nalseebackend.comment.repository.Comment;
+import everycoding.nalseebackend.post.repository.PostRepository;
+import everycoding.nalseebackend.post.repository.Post;
+import everycoding.nalseebackend.user.domain.UserDetail;
 import everycoding.nalseebackend.user.dto.UserFeedResponseDto;
 import everycoding.nalseebackend.user.dto.UserInfoRequestDto;
 import everycoding.nalseebackend.user.dto.UserInfoResponseDto;
@@ -59,11 +59,11 @@ public class UserService {
         User user = userRepository.findById(userId).orElseThrow(() -> new BaseException("wrong userId"));
         return UserInfoResponseDto.builder()
                 .username(user.getUsername())
-                .height(user.getUserInfo().getHeight())
-                .weight(user.getUserInfo().getWeight())
-                .constitution(user.getUserInfo().getConstitution())
-                .style(user.getUserInfo().getStyle())
-                .gender(user.getUserInfo().getGender())
+                .height(user.getUserDetail().getHeight())
+                .weight(user.getUserDetail().getWeight())
+                .constitution(user.getUserDetail().getConstitution())
+                .style(user.getUserDetail().getStyle())
+                .gender(user.getUserDetail().getGender())
                 .build();
     }
 
@@ -74,8 +74,8 @@ public class UserService {
         if (requestDto.getUsername() != null && !requestDto.getUsername().equals(user.getUsername())) {
             user.setUsername(requestDto.getUsername());
         }
-        user.setUserInfo(
-                UserInfo.builder()
+        user.setUserDetail(
+                UserDetail.builder()
                 .height(requestDto.getHeight())
                 .weight(requestDto.getWeight())
                 .constitution(requestDto.getConstitution())

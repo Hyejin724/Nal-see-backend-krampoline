@@ -5,9 +5,9 @@ import everycoding.nalseebackend.api.ApiResponse;
 import everycoding.nalseebackend.auth.customUser.CustomUserDetails;
 import everycoding.nalseebackend.map.controller.dto.MapResponseDto;
 import everycoding.nalseebackend.map.service.MapService;
-import everycoding.nalseebackend.map.service.info.PostListInfo;
 import everycoding.nalseebackend.map.service.info.PostsInMapInfo;
-import everycoding.nalseebackend.post.dto.PostResponseDto;
+import everycoding.nalseebackend.post.controller.dto.PostResponseDto;
+import everycoding.nalseebackend.post.service.info.PostInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,7 +44,7 @@ public class MapController {
             @RequestParam Double bottomLeftLat, @RequestParam Double bottomLeftLong,
             @RequestParam Double topRightLat, @RequestParam Double topRightLong
     ) {
-        List<PostListInfo> infos = mapService.getPostListInMap(
+        List<PostInfo> infos = mapService.getPostListInMap(
                 customUserDetails.getId(), bottomLeftLat, bottomLeftLong, topRightLat, topRightLong
         );
 

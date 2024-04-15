@@ -1,10 +1,10 @@
 package everycoding.nalseebackend.map.service;
 
 import everycoding.nalseebackend.api.exception.BaseException;
-import everycoding.nalseebackend.map.service.info.PostListInfo;
 import everycoding.nalseebackend.map.service.info.PostsInMapInfo;
-import everycoding.nalseebackend.post.PostRepository;
-import everycoding.nalseebackend.post.domain.Post;
+import everycoding.nalseebackend.post.repository.PostRepository;
+import everycoding.nalseebackend.post.repository.Post;
+import everycoding.nalseebackend.post.service.info.PostInfo;
 import everycoding.nalseebackend.user.UserRepository;
 import everycoding.nalseebackend.user.domain.User;
 import lombok.RequiredArgsConstructor;
@@ -75,13 +75,13 @@ public class MapServiceImpl implements MapService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<PostListInfo> getPostListInMap(
+    public List<PostInfo> getPostListInMap(
             Long userId, double bottomLeftLat, double bottomLeftLong, double topRightLat, double topRightLong
     ) {
         List<Post> posts = postRepository.findByLocationWithin(bottomLeftLat, bottomLeftLong, topRightLat, topRightLong);
 
         return posts.stream()
-                .map(post -> PostListInfo.createPostListInfo(post, isLiked(userId, post.getId())))
+                .map(post -> PostInfo.createPostInfo(post, isLiked(userId, post.getId())))
                 .collect(Collectors.toList());
     }
 
