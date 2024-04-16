@@ -18,7 +18,7 @@ public class AuthController {
 
     private final UserService userService;
 
-    @GetMapping("/index")
+    @GetMapping("/api/index")
     public UserResponse getUserInfo() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName(); // JWT에서 사용자의 이메일 가져오기
