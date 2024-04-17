@@ -2,7 +2,7 @@ spring:
   profiles:
     active: dev
   datasource:
-    url: ${DB_RUL}
+    url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: org.mariadb.jdbc.Driver
@@ -96,19 +96,3 @@ logging:
           descriptor:
             sql: TRACE
 
----
-spring:
-  config:
-    activate:
-      on-profile: kram
-    import: application-kram.yml
-logging:
-  level:
-    org:
-      springframework:
-        security: DEBUG
-      hibernate:
-        SQL: DEBUG
-        type:
-          descriptor:
-            sql: TRACE
