@@ -23,6 +23,9 @@ spring:
       client:
         registration:
           kakao:
+            client-id: 
+            client-secret: 
+            redirect-uri: 
             authorization-grant-type: authorization_code
             scope:
                 - profile_nickname
