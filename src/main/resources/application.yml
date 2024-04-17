@@ -62,22 +62,22 @@ logging:
           descriptor:
             sql: TRACE
 
----
-spring:
-  config:
-    activate:
-      on-profile: dev
-    import: application-secret.yml
-logging:
-  level:
-    org:
-      springframework:
-        security: DEBUG
-      hibernate:
-        SQL: DEBUG
-        type:
-          descriptor:
-            sql: TRACE
+# ---
+# spring:
+#   config:
+#     activate:
+#       on-profile: dev
+#     import: application-secret.yml
+# logging:
+#   level:
+#     org:
+#       springframework:
+#         security: DEBUG
+#       hibernate:
+#         SQL: DEBUG
+#         type:
+#           descriptor:
+#             sql: TRACE
 
 ---
 spring:
@@ -95,19 +95,19 @@ logging:
         type:
           descriptor:
             sql: TRACE
----
-spring:
-  config:
-    activate:
-      on-profile: kram
-    import: application-kram.yml
-logging:
-  level:
-    org:
-      springframework:
-        security: DEBUG
-      hibernate:
-        SQL: DEBUG
-        type:
-          descriptor:
-            sql: TRACE
+# ---
+# spring:
+#   config:
+#     activate:
+#       on-profile: kram
+#     import: application-kram.yml
+# logging:
+#   level:
+#     org:
+#       springframework:
+#         security: DEBUG
+#       hibernate:
+#         SQL: DEBUG
+#         type:
+#           descriptor:
+#             sql: TRACE
