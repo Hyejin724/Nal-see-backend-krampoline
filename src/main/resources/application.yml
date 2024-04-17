@@ -41,15 +41,15 @@ spring:
             user-name-attribute: kakao_account
 
 
-# cloud:
-#   aws:
-#     credentials:
-#       access-key: 
-#       secret-key: 
-#     region:
-#       static: ap-northeast-2
-#     stack:
-#       auto: false
+cloud:
+  aws:
+    credentials:
+      access-key: 
+      secret-key: 
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
 
 logging:
   level:
