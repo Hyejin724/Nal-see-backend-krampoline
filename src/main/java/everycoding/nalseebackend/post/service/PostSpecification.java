@@ -1,6 +1,6 @@
 package everycoding.nalseebackend.post.service;
 
-import everycoding.nalseebackend.post.repository.Post;
+import everycoding.nalseebackend.post.domain.Post;
 import jakarta.persistence.criteria.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;

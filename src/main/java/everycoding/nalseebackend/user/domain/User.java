@@ -3,9 +3,9 @@ package everycoding.nalseebackend.user.domain;
 import everycoding.nalseebackend.BaseEntity;
 import everycoding.nalseebackend.auth.oauth2.AuthProvider;
 import everycoding.nalseebackend.auth.oauth2.OAuth2UserInfo;
-import everycoding.nalseebackend.comment.repository.Comment;
+import everycoding.nalseebackend.comment.domain.Comment;
 import everycoding.nalseebackend.firebase.alarm.domain.Alarm;
-import everycoding.nalseebackend.post.repository.Post;
+import everycoding.nalseebackend.post.domain.Post;
 import jakarta.persistence.Entity;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
@@ -109,11 +109,6 @@ public class User extends BaseEntity {
                 .build();
     }
 
-    public void updateOAuth2UserInfo(OAuth2UserInfo oAuth2UserInfo) {
-        this.username = oAuth2UserInfo.getName();
-        this.picture = oAuth2UserInfo.getImageUrl();
-    }
-
     public void addPostLike(Long postId) {
         postLikeList.add(postId);
     }
@@ -139,4 +134,10 @@ public class User extends BaseEntity {
         this.followings.remove(user);
         user.getFollowers().remove(this);
     }
+
+    public boolean isFollowed(User user) {
+        return this.followings.contains(user);
+    }
+
+
 }

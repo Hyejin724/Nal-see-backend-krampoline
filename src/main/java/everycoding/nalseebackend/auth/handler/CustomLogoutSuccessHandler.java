@@ -2,6 +2,9 @@ package everycoding.nalseebackend.auth.handler;
 
 import everycoding.nalseebackend.auth.customUser.CustomUserDetailsService;
 import everycoding.nalseebackend.auth.jwt.JwtTokenProvider;
+import everycoding.nalseebackend.sse.UserStatusController;
+import everycoding.nalseebackend.user.repository.UserRepository;
+import everycoding.nalseebackend.user.domain.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,6 +25,8 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final CustomUserDetailsService userService;
+    private final UserRepository userRepository;
+    private final UserStatusController userStatusController;
 
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -31,17 +36,13 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if ("AccessToken".equals(cookie.getName())) {
-                    accessToken = cookie.getValue().replace("Bearer ", "");
+                    accessToken = cookie.getValue();
                     break;
                 }
             }
         }
-            if (accessToken != null && accessToken.startsWith("Bearer ")) {
-                log.info("자 인자 토큰으로 아이디 찾는다={}", accessToken);
-                String email = jwtTokenProvider.getClaims(accessToken.substring(7)).getSubject();
-                log.info("내가 안뜨면 토큰이 문제여");
-                userService.clearRefreshToken(email);
-            }
+        String email = jwtTokenProvider.getClaims(accessToken).getSubject();
+        log.info("로그아웃이메일={}", email);
 
         ResponseCookie refreshTokenCookie = ResponseCookie.from("RefreshToken", null)
                 .path("/").sameSite("None").httpOnly(false).secure(true).maxAge(0).build();
@@ -64,6 +65,11 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
 //            cookie.setMaxAge(0);
 //            cookie.setHttpOnly(true);
 //            response.addCookie(cookie);
+
+        userService.clearRefreshToken(email);
+        User user = userRepository.findByEmail(email).orElseThrow();
+        Long id = user.getId();
+        userStatusController.updateUserStatus(id, false);
 
             log.info("Success logout");
             response.setStatus(HttpServletResponse.SC_OK);

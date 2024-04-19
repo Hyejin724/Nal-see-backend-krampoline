@@ -8,7 +8,7 @@ import everycoding.nalseebackend.comment.controller.dto.CommentRequestDto;
 import everycoding.nalseebackend.comment.controller.dto.CommentResponseDto;
 import everycoding.nalseebackend.firebase.alarm.AlarmService;
 import everycoding.nalseebackend.firebase.alarm.domain.AlarmType;
-import everycoding.nalseebackend.user.UserService;
+import everycoding.nalseebackend.user.service.UserService;
 import everycoding.nalseebackend.user.domain.User;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

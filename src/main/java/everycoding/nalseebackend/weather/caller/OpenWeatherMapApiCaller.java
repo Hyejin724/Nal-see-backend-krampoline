@@ -20,7 +20,7 @@ public class OpenWeatherMapApiCaller implements WeatherApiCaller {
         String url = "https://api.openweathermap.org/data/2.5/weather?lat=" + latitude + "&lon=" + longitude + "&appid=7b9d8977d2c3d10d5ae6e4b4b4907c10";
         WeatherApiCurrentWeatherDto result = restTemplate.getForObject(url, WeatherApiCurrentWeatherDto.class);
         return new CurrentWeatherInfo(
-                Weather.valueOf(result.getWeather().get(0).getMain()),
+                Weather.valueOf(getWeatherFromCode(result.getWeather().get(0).getId())),
                 Math.ceil((result.getMain().getTemp() - 273.15) * 10) / 10.0,
                 Math.ceil((result.getMain().getFeels_like() - 273.15) * 10) / 10.0,
                 result.getMain().getHumidity()
@@ -37,4 +37,20 @@ public class OpenWeatherMapApiCaller implements WeatherApiCaller {
         );
     }
 
+    private String getWeatherFromCode(Integer code) {
+        switch (code / 100) {
+            case 2:
+                return "Thunderstorm";
+            case 5:
+                return "Rain";
+            case 6:
+                return "Snow";
+            case 7:
+                return "Fog";
+            case 8:
+                if (code % 100 == 0) return "Clear";
+                else return "Clouds";
+        }
+        throw new BaseException("wrong weather");
+    }
 }

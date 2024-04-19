@@ -7,7 +7,7 @@ import everycoding.nalseebackend.firebase.alarm.AlarmService;
 import everycoding.nalseebackend.firebase.alarm.domain.AlarmType;
 import everycoding.nalseebackend.post.service.PostService;
 import everycoding.nalseebackend.post.controller.dto.*;
-import everycoding.nalseebackend.user.UserService;
+import everycoding.nalseebackend.user.service.UserService;
 import everycoding.nalseebackend.user.domain.User;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

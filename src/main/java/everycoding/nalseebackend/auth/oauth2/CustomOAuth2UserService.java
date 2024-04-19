@@ -3,7 +3,7 @@ package everycoding.nalseebackend.auth.oauth2;
 import com.amazonaws.util.StringUtils;
 import everycoding.nalseebackend.auth.customUser.CustomUserDetails;
 import everycoding.nalseebackend.auth.exception.OAuth2AuthenticationProcessingException;
-import everycoding.nalseebackend.user.UserRepository;
+import everycoding.nalseebackend.user.repository.UserRepository;
 import everycoding.nalseebackend.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -58,7 +58,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                         " account to login.");
             }
             log.info("Is different Provider Id then Process Update User");
-            user = updateExistUser(user, oAuth2UserInfo);
         } else {
             log.info("Welcome New User, Sign In");
             user = registerNewUser(oAuth2UserRequest, oAuth2UserInfo);
@@ -83,10 +82,5 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         log.info("imageUrl={}", imageUrl);
 
         return userRepository.save(newUser);
-    }
-
-    private User updateExistUser(User user, OAuth2UserInfo oAuth2UserInfo) {
-        user.updateOAuth2UserInfo(oAuth2UserInfo);
-        return userRepository.save(user);
     }
 }

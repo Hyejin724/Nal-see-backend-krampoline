@@ -4,13 +4,13 @@ import everycoding.nalseebackend.Mapper;
 import everycoding.nalseebackend.api.exception.BaseException;
 import everycoding.nalseebackend.aws.S3Service;
 import everycoding.nalseebackend.comment.service.CommentService;
-import everycoding.nalseebackend.post.repository.Post;
+import everycoding.nalseebackend.post.domain.Post;
 import everycoding.nalseebackend.post.repository.PostRepository;
 import everycoding.nalseebackend.post.service.info.PostForDetailInfo;
 import everycoding.nalseebackend.post.service.info.PostForUserFeedInfo;
 import everycoding.nalseebackend.post.service.info.PostInfo;
 import everycoding.nalseebackend.post.service.info.PostScoreInfo;
-import everycoding.nalseebackend.user.UserRepository;
+import everycoding.nalseebackend.user.repository.UserRepository;
 import everycoding.nalseebackend.user.domain.*;
 import everycoding.nalseebackend.user.service.info.UserDetailInfo;
 import everycoding.nalseebackend.weather.caller.WeatherApiCaller;
@@ -230,13 +230,10 @@ public class PostServiceImpl implements PostService {
 
         CurrentWeatherInfo currentWeatherInfo = weatherApiCaller.getCurrentWeather(latitude, longitude);
 
-        UserDetail userDetail = UserDetail.builder()
-                .height(userDetailInfo.getHeight())
-                .weight(userDetailInfo.getWeight())
-                .constitution(Constitution.valueOf(userDetailInfo.getConstitution()))
-                .style(userDetailInfo.getStyle().stream().map(FashionStyle::valueOf).collect(Collectors.toList()))
-                .gender(Gender.valueOf(userDetailInfo.getGender()))
-                .build();
+        UserDetail userDetail = new UserDetail();
+        if (userDetailInfo.getHeight() != null) {
+            userDetail = mapper.toUserDetail(userDetailInfo);
+        }
 
         postRepository.save(
                 Post.builder()
@@ -267,8 +264,6 @@ public class PostServiceImpl implements PostService {
         if (userDetailInfo != null) {
             post.setUserDetail(mapper.toUserDetail(userDetailInfo));
         }
-
-        postRepository.save(post);
     }
 
     @Override
@@ -290,9 +285,6 @@ public class PostServiceImpl implements PostService {
 
         user.addPostLike(postId);
         post.increaseLikeCNT();
-
-        userRepository.save(user);
-        postRepository.save(post);
     }
 
     @Override
@@ -302,9 +294,6 @@ public class PostServiceImpl implements PostService {
 
         user.cancelPostLike(postId);
         post.decreaseLikeCNT();
-
-        userRepository.save(user);
-        postRepository.save(post);
     }
 
     private boolean isLiked(long userId, long postId) {

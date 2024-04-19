@@ -1,7 +1,7 @@
-package everycoding.nalseebackend.comment.repository;
+package everycoding.nalseebackend.comment.domain;
 
 import everycoding.nalseebackend.BaseEntity;
-import everycoding.nalseebackend.post.repository.Post;
+import everycoding.nalseebackend.post.domain.Post;
 import everycoding.nalseebackend.user.domain.User;
 import jakarta.persistence.*;
 import lombok.Builder;

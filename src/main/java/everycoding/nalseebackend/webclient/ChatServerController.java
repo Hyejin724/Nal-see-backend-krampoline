@@ -3,7 +3,7 @@ package everycoding.nalseebackend.webclient;
 import everycoding.nalseebackend.auth.jwt.JwtTokenProvider;
 import everycoding.nalseebackend.firebase.FcmService;
 import everycoding.nalseebackend.firebase.dto.FcmSendDto;
-import everycoding.nalseebackend.user.UserRepository;
+import everycoding.nalseebackend.user.repository.UserRepository;
 import everycoding.nalseebackend.user.domain.User;
 import everycoding.nalseebackend.webclient.dto.MessageEventDto;
 import everycoding.nalseebackend.webclient.dto.UserInfo;
@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,6 +25,7 @@ public class ChatServerController {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
     private final FcmService fcmService;
+    private final Set<Long> authenticatedUsers;
 
     @GetMapping("/user/info")
     public UserInfo getUser(HttpServletRequest request) {
@@ -71,6 +73,11 @@ public class ChatServerController {
                 fcmService.sendMessageTo(fcmSendDto);
             }
         }
+    }
 
+    @PostMapping("/online")
+    public Boolean isOnline(@RequestBody Long userId) {
+        log.info(authenticatedUsers.toString());
+        return authenticatedUsers.contains(userId);
     }
 }

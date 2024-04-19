@@ -11,6 +11,10 @@ spring:
             client-id: ${OAUTH_KAKAO_ID}
             client-secret: ${OAUTH_KAKAO_SECRET}
             redirect-uri: ${OAUTH_KAKAO_URI}
+  jpa:
+    hibernate:
+      ddl-auto: none
+
 
 cloud:
    aws:

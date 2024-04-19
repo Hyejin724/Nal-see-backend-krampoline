@@ -1,6 +1,7 @@
 package everycoding.nalseebackend.comment.repository;
 
-import everycoding.nalseebackend.post.repository.Post;
+import everycoding.nalseebackend.comment.domain.Comment;
+import everycoding.nalseebackend.post.domain.Post;
 import everycoding.nalseebackend.user.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

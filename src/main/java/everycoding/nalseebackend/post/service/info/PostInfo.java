@@ -1,6 +1,6 @@
 package everycoding.nalseebackend.post.service.info;
 
-import everycoding.nalseebackend.post.repository.Post;
+import everycoding.nalseebackend.post.domain.Post;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

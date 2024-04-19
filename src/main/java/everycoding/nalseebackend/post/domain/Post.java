@@ -1,7 +1,7 @@
-package everycoding.nalseebackend.post.repository;
+package everycoding.nalseebackend.post.domain;
 
 import everycoding.nalseebackend.BaseEntity;
-import everycoding.nalseebackend.comment.repository.Comment;
+import everycoding.nalseebackend.comment.domain.Comment;
 import everycoding.nalseebackend.user.domain.*;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -27,7 +27,8 @@ public class Post extends BaseEntity {
     private List<String> pictureList;
 
     @Setter
-    @Column(columnDefinition = "LONGTEXT")
+    @Lob
+//    @Column(columnDefinition = "LONGTEXT")
     private String content;
 
     private int likeCNT;

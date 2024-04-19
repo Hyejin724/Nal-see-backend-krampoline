@@ -8,14 +8,12 @@ import everycoding.nalseebackend.auth.dto.response.UserDto;
 import everycoding.nalseebackend.auth.filter.JwtAuthenticationFilter;
 import everycoding.nalseebackend.auth.filter.JwtAuthorizationFilter;
 import everycoding.nalseebackend.auth.handler.CustomLogoutSuccessHandler;
-import everycoding.nalseebackend.auth.jwt.JwtAccessDeniedHandler;
-import everycoding.nalseebackend.auth.jwt.JwtAuthenticationEntryPoint;
 import everycoding.nalseebackend.auth.jwt.JwtTokenProvider;
 import everycoding.nalseebackend.auth.oauth2.CustomOAuth2UserService;
-import everycoding.nalseebackend.user.UserRepository;
+import everycoding.nalseebackend.sse.UserStatusController;
+import everycoding.nalseebackend.user.repository.UserRepository;
 import everycoding.nalseebackend.user.domain.User;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +42,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+
 @EnableWebSecurity
 @EnableMethodSecurity
 @Configuration
@@ -55,6 +54,7 @@ public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
+    private final UserStatusController userStatusController;
 
     //Spring Security에서 제공하는 클래스, 비밀번호를 안전하게 해싱
     @Bean
@@ -76,12 +76,12 @@ public class SecurityConfig {
                 )
                 .logout(logout -> logout
                         .logoutUrl("/api/logout")
-                        .logoutSuccessHandler(new CustomLogoutSuccessHandler(jwtTokenProvider, customUserDetailsService))
+                        .logoutSuccessHandler(new CustomLogoutSuccessHandler(jwtTokenProvider, customUserDetailsService, userRepository, userStatusController))
                         .deleteCookies("RefreshToken","AccessToken")
                         .permitAll()
                 )
-                .addFilter(new JwtAuthenticationFilter(jwtTokenProvider, userRepository, authenticationManager(customUserDetailsService), customUserDetailsService, "/api/auth"))
-                .addFilterAfter(new JwtAuthorizationFilter(userRepository, jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+                .addFilter(new JwtAuthenticationFilter(jwtTokenProvider, userRepository, authenticationManager(customUserDetailsService), customUserDetailsService, "/api/auth", userStatusController))
+                .addFilterAfter(new JwtAuthorizationFilter(userRepository, jwtTokenProvider, userStatusController), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
                         .anyRequest().permitAll());
 //                .exceptionHandling(configurer -> configurer
@@ -143,6 +143,7 @@ public class SecurityConfig {
         }
         User user = customUserDetailsService.selcetUser(userEmail);
         user.setRefreshToken(refreshToken);
+        userStatusController.updateUserStatus(user.getId(), true);
         userRepository.save(user);
         UserDto userDto = new UserDto();
         userDto.setUserId(user.getId());
@@ -153,7 +154,8 @@ public class SecurityConfig {
         response.getWriter().write(result); //body
 //        response.sendRedirect("http://localhost:5173/oauth2/redirect");
 //        response.sendRedirect("https://k547f55f71a44a.user-app.krampoline.com/oauth2/redirect/?token="+token);
-        response.sendRedirect("https://k9314c9500eb3a.user-app.krampoline.com");
+        response.sendRedirect("https://app.nalsee.site");
+//        response.sendRedirect("http://localhost:5173");
     }
 
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
@@ -177,7 +179,7 @@ public class SecurityConfig {
         corsConfiguration.setAllowCredentials(true);
 
 //      corsConfiguration.setAllowedOrigins(List.of("http://localhost:5173", "https://ide-frontend-wheat.vercel.app/login", "https://ide-frontend-six.vercel.app", "https://ide-frontend-wheat.vercel.app"));
-        corsConfiguration.setAllowedOrigins(List.of("http://localhost:5173", "https://app.nalsee.site","https://nalsee.site", "https://k9314c9500eb3a.user-app.krampoline.com"));
+        corsConfiguration.setAllowedOrigins(List.of("http://localhost:5173", "https://app.nalsee.site","https://nalsee.site","https://localhost:8080"));
         corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"));
         corsConfiguration.setAllowCredentials(true);
 

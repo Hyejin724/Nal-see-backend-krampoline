@@ -8,6 +8,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class UserDetailDto {
+    private String username;
     private Double height;
     private Double weight;
     private String constitution;

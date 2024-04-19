@@ -7,11 +7,11 @@ import everycoding.nalseebackend.auth.customUser.CustomUserDetailsService;
 import everycoding.nalseebackend.auth.dto.request.LoginRequestDto;
 import everycoding.nalseebackend.auth.dto.response.UserDto;
 import everycoding.nalseebackend.auth.jwt.JwtTokenProvider;
-import everycoding.nalseebackend.user.UserRepository;
+import everycoding.nalseebackend.sse.UserStatusController;
+import everycoding.nalseebackend.user.repository.UserRepository;
 import everycoding.nalseebackend.user.domain.User;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -33,17 +33,19 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
     private final CustomUserDetailsService customUserDetailsService;
+    private final UserStatusController userStatusController;
 
     public JwtAuthenticationFilter(
             JwtTokenProvider jwtTokenProvider,
             UserRepository userRepository,
             AuthenticationManager authenticationManager,
             CustomUserDetailsService customUserDetailsService,
-            String url) {
+            String url, UserStatusController userStatusController) {
         super(authenticationManager);
         this.jwtTokenProvider = jwtTokenProvider;
         this.userRepository = userRepository;
         this.customUserDetailsService = customUserDetailsService;
+        this.userStatusController = userStatusController;
         setFilterProcessesUrl(url);
     }
 
@@ -121,6 +123,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         }
         User user = customUserDetailsService.selcetUser(userEmail);
         user.setRefreshToken(refreshToken);
+        userStatusController.updateUserStatus(user.getId(), true);
         userRepository.save(user);
         UserDto userDto = new UserDto();
         userDto.setUserId(user.getId());

@@ -3,7 +3,7 @@ package everycoding.nalseebackend.firebase;
 import everycoding.nalseebackend.api.ApiResponse;
 import everycoding.nalseebackend.auth.jwt.JwtTokenProvider;
 import everycoding.nalseebackend.firebase.dto.FcmSendDto;
-import everycoding.nalseebackend.user.UserRepository;
+import everycoding.nalseebackend.user.repository.UserRepository;
 import everycoding.nalseebackend.user.domain.User;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j

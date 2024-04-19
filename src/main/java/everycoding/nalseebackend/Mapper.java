@@ -12,15 +12,20 @@ import everycoding.nalseebackend.post.service.info.PostForDetailInfo;
 import everycoding.nalseebackend.post.service.info.PostForUserFeedInfo;
 import everycoding.nalseebackend.post.service.info.PostInfo;
 import everycoding.nalseebackend.post.service.info.PostScoreInfo;
+import everycoding.nalseebackend.user.controller.dto.FollowUserDto;
 import everycoding.nalseebackend.user.controller.dto.UserDetailDto;
+import everycoding.nalseebackend.user.controller.dto.UserFeedResponseDto;
 import everycoding.nalseebackend.user.domain.UserDetail;
+import everycoding.nalseebackend.user.service.info.FollowUserInfo;
 import everycoding.nalseebackend.user.service.info.UserDetailInfo;
+import everycoding.nalseebackend.user.service.info.UserFeedInfo;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
 @org.mapstruct.Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface Mapper {
 
+    // 포스트
     MapResponseDto toDto(PostsInMapInfo info);
 
     PostResponseDto toDto(PostInfo info);
@@ -34,9 +39,15 @@ public interface Mapper {
 
     PostForUserFeedResponseDto toDto(PostForUserFeedInfo infos);
 
-
+    // 댓글
     CommentResponseDto toDto(CommentInfo info);
 
+    // 유저
+    UserDetailDto toDto(UserDetailInfo info);
+
+    UserFeedResponseDto toDto(UserFeedInfo info);
+
+    FollowUserDto toDto(FollowUserInfo info);
 
     UserDetailInfo toInfo(UserDetail userDetail);
 

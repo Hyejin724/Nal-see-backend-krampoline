@@ -3,7 +3,7 @@ package everycoding.nalseebackend.firebase.alarm;
 import everycoding.nalseebackend.api.ApiResponse;
 import everycoding.nalseebackend.auth.jwt.JwtTokenProvider;
 import everycoding.nalseebackend.firebase.alarm.dto.AlarmDto;
-import everycoding.nalseebackend.user.UserRepository;
+import everycoding.nalseebackend.user.repository.UserRepository;
 import everycoding.nalseebackend.user.domain.User;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;

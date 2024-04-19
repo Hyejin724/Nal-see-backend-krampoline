@@ -1,15 +1,17 @@
-package everycoding.nalseebackend.user;
+package everycoding.nalseebackend.user.service;
 
+import everycoding.nalseebackend.Mapper;
 import everycoding.nalseebackend.api.exception.BaseException;
+import everycoding.nalseebackend.auth.dto.request.DeleteRequestDto;
 import everycoding.nalseebackend.auth.jwt.JwtTokenProvider;
 import everycoding.nalseebackend.comment.repository.CommentRepository;
-import everycoding.nalseebackend.comment.repository.Comment;
+import everycoding.nalseebackend.comment.domain.Comment;
 import everycoding.nalseebackend.post.repository.PostRepository;
-import everycoding.nalseebackend.post.repository.Post;
-import everycoding.nalseebackend.user.domain.UserDetail;
-import everycoding.nalseebackend.user.dto.UserFeedResponseDto;
-import everycoding.nalseebackend.user.dto.UserInfoRequestDto;
-import everycoding.nalseebackend.user.dto.UserInfoResponseDto;
+import everycoding.nalseebackend.post.domain.Post;
+import everycoding.nalseebackend.user.repository.UserRepository;
+import everycoding.nalseebackend.user.service.info.FollowUserInfo;
+import everycoding.nalseebackend.user.service.info.UserDetailInfo;
+import everycoding.nalseebackend.user.service.info.UserFeedInfo;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 
@@ -22,6 +24,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -35,6 +38,7 @@ public class UserService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final CommentRepository commentRepository;
     private final JwtTokenProvider jwtTokenProvider;
+    private final Mapper mapper;
 
     public void followUser(Long userId, Long myId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new BaseException("wrong userId"));
@@ -55,52 +59,31 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public UserInfoResponseDto getUserInfo(long userId) {
+    public UserDetailInfo getUserInfo(long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new BaseException("wrong userId"));
-        return UserInfoResponseDto.builder()
-                .username(user.getUsername())
-                .height(user.getUserDetail().getHeight())
-                .weight(user.getUserDetail().getWeight())
-                .constitution(user.getUserDetail().getConstitution())
-                .style(user.getUserDetail().getStyle())
-                .gender(user.getUserDetail().getGender())
-                .build();
+        return UserDetailInfo.createUserDetailInfo(user);
     }
 
-    public void setUserInfo(long userId, UserInfoRequestDto requestDto) {
+    public void setUserInfo(long userId, UserDetailInfo userDetailInfo) {
         User user = userRepository.findById(userId).orElseThrow(() -> new BaseException("wrong userId"));
 
         // 새로운 username이 제공되었는지 확인하고 업데이트
-        if (requestDto.getUsername() != null && !requestDto.getUsername().equals(user.getUsername())) {
-            user.setUsername(requestDto.getUsername());
+        if (userDetailInfo.getUsername() != null && !userDetailInfo.getUsername().equals(user.getUsername())) {
+            user.setUsername(userDetailInfo.getUsername());
         }
         user.setUserDetail(
-                UserDetail.builder()
-                .height(requestDto.getHeight())
-                .weight(requestDto.getWeight())
-                .constitution(requestDto.getConstitution())
-                .style(requestDto.getStyle())
-                .gender(requestDto.getGender())
-                .build()
+                mapper.toUserDetail(userDetailInfo)
         );
         user.setNewUser(false);
         userRepository.save(user);
     }
 
     @Transactional(readOnly = true)
-    public UserFeedResponseDto getFeed(long myId, long userId) {
+    public UserFeedInfo getFeed(long myId, long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new BaseException("wrong userId"));
         User me = userRepository.findById(myId).orElseThrow(() -> new BaseException("wrong userId"));
 
-        return UserFeedResponseDto.builder()
-                .feedCount(user.getPosts().size())
-                .followingCount(user.getFollowings().size())
-                .followerCount(user.getFollowers().size())
-                .userId(user.getId())
-                .userImage(user.getPicture())
-                .username(user.getUsername())
-                .isFollowed(user.getFollowers().contains(me))
-                .build();
+        return UserFeedInfo.createUserFeedInfo(user, me);
     }
 
     public User findByEmail(String email) {
@@ -166,9 +149,22 @@ public class UserService {
         return byEmail.orElseThrow();
     }
 
-    public void deleteUser(SignupRequestDto signupRequestDto) {
-        User user = userRepository.findByEmail(signupRequestDto.getEmail())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + signupRequestDto.getEmail()));
+    @Transactional
+    public void deleteUser(DeleteRequestDto deleteRequestDto) {
+        User user = userRepository.findByEmail(deleteRequestDto.getEmail())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + deleteRequestDto.getEmail()));
+
+        // 팔로잉 목록 해제
+        for (User following : user.getFollowings()) {
+            following.getFollowers().remove(user);
+        }
+        user.getFollowings().clear();
+
+        // 팔로워 목록 해제
+        for (User follower : user.getFollowers()) {
+            follower.getFollowings().remove(user);
+        }
+        user.getFollowers().clear();
 
         // 사용자 삭제
         userRepository.delete(user);
@@ -179,9 +175,26 @@ public class UserService {
         //댓글 삭제
         commentRepository.deleteByUser(user);
 
-
-
         log.info("회원 탈퇴 완료: " + user.getUsername());
     }
 
+    public List<FollowUserInfo> getFollowingList(Long myId,Long userId) {
+        User me = userRepository.findById(myId).orElseThrow(() -> new BaseException("wrong userId"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException("wrong userId"));
+
+        return user.getFollowings()
+                .stream()
+                .map(following -> FollowUserInfo.createFollowUserInfo(following, me))
+                .toList();
+    }
+
+    public List<FollowUserInfo> getFollowerList(Long myId, Long userId) {
+        User me = userRepository.findById(myId).orElseThrow(() -> new BaseException("wrong userId"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException("wrong userId"));
+
+        return user.getFollowers()
+                .stream()
+                .map(follower -> FollowUserInfo.createFollowUserInfo(follower, me))
+                .toList();
+    }
 }

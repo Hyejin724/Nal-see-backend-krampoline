@@ -1,6 +1,6 @@
 package everycoding.nalseebackend.post.repository;
 
-import everycoding.nalseebackend.post.repository.Post;
+import everycoding.nalseebackend.post.domain.Post;
 import everycoding.nalseebackend.user.domain.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

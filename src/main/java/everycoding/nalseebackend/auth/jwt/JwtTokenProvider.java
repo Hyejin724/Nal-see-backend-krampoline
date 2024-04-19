@@ -1,6 +1,6 @@
 package everycoding.nalseebackend.auth.jwt;
 
-import everycoding.nalseebackend.user.UserRepository;
+import everycoding.nalseebackend.user.repository.UserRepository;
 import everycoding.nalseebackend.user.domain.User;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +19,7 @@ import static everycoding.nalseebackend.auth.jwt.JwtProperties.SECRET_KEY;
 public class JwtTokenProvider {
 
     private final UserRepository userRepository;
+//    private final Set<Long> authenticatedUsers;
 
     public String createAccessToken(Authentication authentication){
 
@@ -53,6 +54,10 @@ public class JwtTokenProvider {
     public String validateToken(String accessToken) {
         try {
             Jwts.parser().verifyWith(SECRET_KEY).build().parseSignedClaims(accessToken);
+//            User user = userRepository.findByEmail(getClaims(accessToken).getSubject()).orElseThrow();
+//            Long userId = user.getId();
+//            System.out.println(userId);
+//            authenticatedUsers.add(userId);
             return "Success";
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             return "signature is wrong.";
