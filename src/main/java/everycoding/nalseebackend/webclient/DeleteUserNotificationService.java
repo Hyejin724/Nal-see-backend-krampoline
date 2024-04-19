@@ -12,7 +12,7 @@ public class DeleteUserNotificationService {
     private final WebClient webClient;
 
     public DeleteUserNotificationService(WebClient.Builder webClientBuilder) {
-        this.webClient = webClientBuilder.baseUrl("https://nalsee.site:8090/").build();
+        this.webClient = webClientBuilder.baseUrl("https://k9314c9500eb3a.user-app.krampoline.com/ws/").build();
 //        this.webClient = webClientBuilder.baseUrl("http://localhost:8090/").build();
     }
 
