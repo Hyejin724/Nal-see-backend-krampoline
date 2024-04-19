@@ -153,7 +153,7 @@ public class SecurityConfig {
         String result = om.registerModule(new JavaTimeModule()).writeValueAsString(userDto);
         response.getWriter().write(result); //body
 //        response.sendRedirect("http://localhost:5173/oauth2/redirect");
-       response.sendRedirect("https://k9314c9500eb3a.user-app.krampoline.com");
+       response.sendRedirect("https://k9314c9500eb3a.user-app.krampoline.com/oauth2/redirect/?token="+accessToken);
         // response.sendRedirect("https://app.nalsee.site");
 //        response.sendRedirect("http://localhost:5173");
     }
