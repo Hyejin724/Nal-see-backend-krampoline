@@ -25,7 +25,7 @@ spring:
           kakao:
             client-id: 3dd4f833d984da38334cc5c01c23ed5b
             client-secret: Zpiomn48UR0T198uygxgsQkQ91kDCrUL
-            redirect-uri: http://https://k9314c9500eb3a.user-app.krampoline.com/login/oauth2/code/kakao
+            redirect-uri: https://k9314c9500eb3a.user-app.krampoline.com/login/oauth2/code/kakao
             authorization-grant-type: authorization_code
             scope:
                 - profile_nickname
