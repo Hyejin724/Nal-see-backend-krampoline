@@ -2,9 +2,9 @@ spring:
   profiles:
     active: dev
   datasource:
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: jdbc:mariadb://mariadb:3306/nalsee
+    username: root
+    password: root
     driver-class-name: org.mariadb.jdbc.Driver
   jpa:
     database-platform: org.hibernate.dialect.MariaDBDialect
@@ -23,9 +23,9 @@ spring:
       client:
         registration:
           kakao:
-            client-id: ${KAKAO_CLIENT_ID}
-            client-secret: ${KAKAO_CLIENT_SECRET}
-            redirect_uri: ${KAKAO_REDIRECT_URI} 
+            client-id: 3dd4f833d984da38334cc5c01c23ed5b
+            client-secret: Zpiomn48UR0T198uygxgsQkQ91kDCrUL
+            redirect-uri: http://https://k9314c9500eb3a.user-app.krampoline.com/login/oauth2/code/kakao
             authorization-grant-type: authorization_code
             scope:
                 - profile_nickname
@@ -44,63 +44,13 @@ spring:
 cloud:
   aws:
     credentials:
-      access-key: 
-      secret-key: 
+      access-key: AKIAXFE3K33TPGJQRC4M
+      secret-key: 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
     region:
       static: ap-northeast-2
     stack:
       auto: false
 
-logging:
-  level:
-    org:
-      springframework:
-        security: DEBUG
-      hibernate:
-        SQL: DEBUG
-        type:
-          descriptor:
-            sql: TRACE
-
----
-spring:
-  config:
-    activate:
-      on-profile: dev
-    import: application-secret.yml
-logging:
-  level:
-    org:
-      springframework:
-        security: DEBUG
-      hibernate:
-        SQL: DEBUG
-        type:
-          descriptor:
-            sql: TRACE
-
----
-spring:
-  config:
-    activate:
-      on-profile: prod
-    import: application-prod.yml
-logging:
-  level:
-    org:
-      springframework:
-        security: DEBUG
-      hibernate:
-        SQL: DEBUG
-        type:
-          descriptor:
-            sql: TRACE
----
-spring:
-  config:
-    activate:
-      on-profile: kram
-    import: application-kram.yml
 logging:
   level:
     org:
